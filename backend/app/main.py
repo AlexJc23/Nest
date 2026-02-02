@@ -1,11 +1,12 @@
 from fastapi import FastAPI
 from app.core.config import get_settings
 from fastapi.middleware.cors import CORSMiddleware
+from app.api import auth
 
 settings = get_settings()
 
 app = FastAPI()
-
+app.include_router(auth.router)
 
 app.add_middleware(
     CORSMiddleware,
