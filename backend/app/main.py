@@ -1,12 +1,14 @@
 from fastapi import FastAPI
 from app.core.config import get_settings
 from fastapi.middleware.cors import CORSMiddleware
-from app.api import auth
+from app.api import auth, health, users
 
 settings = get_settings()
 
 app = FastAPI()
 app.include_router(auth.router)
+app.include_router(health.health_router)
+app.include_router(users.user_router)
 
 app.add_middleware(
     CORSMiddleware,
@@ -15,7 +17,3 @@ app.add_middleware(
     allow_methods=["GET", "POST", "PUT", "DELETE" ],
     allow_headers=["Authorization", "Content-Type"],
 )
-
-@app.get("/health")
-def health_check():
-    return {"status": "ok"}
