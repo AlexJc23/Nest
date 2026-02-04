@@ -1,13 +1,18 @@
-from fastapi import Depends, HTTPException, status
-from app.dependencies.auth import get_current_user
+from fastapi import Depends
 from app.schemas.users import UserResponse
+from app.exceptions import AppException
+from app.dependencies.auth import get_authenticated_user
 
 def required_role(required_role: str):
-    def role_checker(user: UserResponse = Depends(get_current_user)):
+    def checker(
+        user: UserResponse = Depends(get_authenticated_user),
+    ) -> UserResponse:
         if user.role != required_role:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="Insufficient permissions"
+            raise AppException(
+                code="NOT_AUTHORIZED",
+                message="Forbidden",
+                status_code=403,
             )
         return user
-    return role_checker
+
+    return checker
