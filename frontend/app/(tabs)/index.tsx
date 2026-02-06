@@ -15,7 +15,7 @@ export default function HomeScreen() {
 
   useEffect(() => {
     async function loadStatus() {
-      const data = await apiGet('/health');
+      const data = await apiGet('/v1/health');
       setStatus(data.status);
     }
 

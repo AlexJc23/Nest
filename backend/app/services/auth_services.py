@@ -1,4 +1,4 @@
-from app.schemas.auth import LoginRequest, LoginResponse
+from app.schemas.v1.auth import LoginRequest, LoginResponse
 
 def login_user(payload: LoginRequest) -> LoginResponse:
     # Here you would add the logic to authenticate the user

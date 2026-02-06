@@ -4,9 +4,9 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import get_settings
 from app.exceptions import AppException
-from app.schemas.error import ErrorDetail, ErrorResponse
+from app.schemas.v1.error import ErrorDetail, ErrorResponse
 
-from app.api import auth, health, users
+from app.api.v1 import auth, health, users
 
 
 def create_app() -> FastAPI:

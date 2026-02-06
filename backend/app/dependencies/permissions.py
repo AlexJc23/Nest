@@ -1,5 +1,5 @@
 from fastapi import Depends
-from app.schemas.users import UserResponse
+from app.schemas.v1.users import UserResponse
 from app.exceptions import AppException
 from app.dependencies.auth import get_authenticated_user
 
