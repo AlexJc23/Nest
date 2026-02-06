@@ -1,5 +1,5 @@
-from app.models.user import UserModel
-from app.schemas.users import UserResponse
+from app.domain.user import UserModel
+from app.schemas.v1.users import UserResponse
 
 def get_user_by_token(token: str) -> UserResponse:
     # Dummy implementation for example purposes

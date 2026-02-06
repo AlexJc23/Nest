@@ -3,29 +3,61 @@
 # =========================
 node_modules/
 
+# =========================
 # Python virtual environments
+# =========================
 venv/
 .venv/
 env/
+ENV/
 
 # =========================
-# Python
+# Python cache / bytecode
 # =========================
 __pycache__/
-*.pyc
+**/__pycache__/
+*.py[cod]
+*$py.class
+
+# =========================
+# Testing / tooling
+# =========================
 .pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
 
 # =========================
 # Environment variables
 # =========================
-.env*
+.env
+.env.*
 !.env.example
+
+# =========================
+# Databases (local only)
+# =========================
+*.sqlite
+*.sqlite3
+*.db
+
+# =========================
+# Logs
+# =========================
+*.log
+
+# =========================
+# Build / dist
+# =========================
+dist/
+build/
+*.egg-info/
 
 # =========================
 # Expo / React Native
 # =========================
 .expo/
-dist/
 web-build/
 expo-env.d.ts
 
@@ -56,6 +88,7 @@ yarn-error.*
 # OS junk
 # =========================
 .DS_Store
+Thumbs.db
 
 # =========================
 # TypeScript
@@ -69,6 +102,12 @@ yarn-error.*
 /android
 
 # =========================
+# Editor junk
+# =========================
+.vscode/
+.idea/
+
+# =========================
 # Examples / temp
 # =========================
-app-example
+app-example/

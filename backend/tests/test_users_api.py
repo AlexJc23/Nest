@@ -1,5 +1,5 @@
 import app.dependencies.auth as auth_module
-from app.schemas.users import UserResponse
+from app.schemas.v1.users import UserResponse
 from fastapi.testclient import TestClient
 from app.main import create_app
 
