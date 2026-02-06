@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends, Request
 from app.dependencies.auth import get_authenticated_user, get_current_user
 from app.dependencies.permissions import required_role
-from app.schemas.users import UserResponse, UserCreate
+from app.schemas.v1.users import UserResponse, UserCreate
 from app.exceptions import AppException
 from datetime import datetime
 
 # user_router = APIRouter(prefix="/users", dependencies=[Depends(get_current_user)])
-user_router = APIRouter(prefix="/users")
+user_router = APIRouter(prefix="/v1/users")
 
 @user_router.get("/me")
 def read_me(user: UserResponse = Depends(get_authenticated_user)):

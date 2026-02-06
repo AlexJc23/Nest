@@ -1,7 +1,6 @@
 from typing import Optional
 from fastapi import Header, HTTPException, status, Depends
-from app.models.user import UserModel
-from app.schemas.users import UserResponse
+from app.schemas.v1.users import UserResponse
 from app.services.users import get_user_by_token
 from app.exceptions import AppException
 

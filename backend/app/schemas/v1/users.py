@@ -1,4 +1,4 @@
-from app.models.user import UserModel
+from app.domain.user import UserModel
 from pydantic import BaseModel, EmailStr
 from typing import Optional
 from datetime import datetime

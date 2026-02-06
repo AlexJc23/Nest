@@ -8,7 +8,7 @@ sys.path.insert(0, str(ROOT_DIR))
 
 # --- now imports work ---
 import pytest
-from app.schemas.users import UserResponse
+from app.schemas.v1.users import UserResponse
 
 @pytest.fixture
 def fake_user():
