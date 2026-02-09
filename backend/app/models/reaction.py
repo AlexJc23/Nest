@@ -14,7 +14,7 @@ class Reaction(Base):
     post_id: Mapped[int] = mapped_column(ForeignKey("posts.id"), nullable=False, index=True)
     comment_id: Mapped[int] = mapped_column(ForeignKey("comments.id"), nullable=True, index=True)
     owner_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
-    name: Mapped[str] = mapped_column(String, unique=True, index=True, nullable=False)
+    name: Mapped[str] = mapped_column(String, index=True, nullable=True)
     created_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     updated_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
 
