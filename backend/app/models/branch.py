@@ -20,3 +20,6 @@ class Branch(Base):
     # Relationship to User model
     users: Mapped[list["User"]] = relationship("User", back_populates="branch")
     events: Mapped[list["Event"]] = relationship("Event", back_populates="branch", cascade="all, delete-orphan")
+
+    def __repr__(self) -> str:
+        return f"<Branch id={self.id} name={self.name}>"

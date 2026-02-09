@@ -16,3 +16,6 @@ class PostImage(Base):
 
     # Relationships can be defined here if needed
     post: Mapped["Post"] = relationship("Post", back_populates="images")
+
+    def __repr__(self) -> str:
+        return f"<PostImage id={self.id} post_id={self.post_id}>"

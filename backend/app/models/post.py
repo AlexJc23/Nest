@@ -23,7 +23,10 @@ class Post(Base):
 
     # Relationships can be defined here if needed
     owner: Mapped["User"] = relationship("User", back_populates="posts")
-    group: Mapped["Group"] = relationship("Group", back_populates="posts")
+    group: Mapped["Group | None"] = relationship("Group", back_populates="posts")
     images: Mapped[list["PostImage"]] = relationship("PostImage", back_populates="post", cascade="all, delete-orphan")
     comments: Mapped[list["Comment"]] = relationship("Comment", back_populates="post", cascade="all, delete-orphan")
     reactions: Mapped[list["Reaction"]] = relationship("Reaction", back_populates="post", cascade="all, delete-orphan")
+
+    def __repr__(self) -> str:
+        return f"<Post id={self.id} owner_id={self.owner_id}>"

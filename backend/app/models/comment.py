@@ -23,3 +23,6 @@ class Comment(Base):
     post: Mapped["Post"] = relationship("Post", back_populates="comments")
     owner: Mapped["User"] = relationship("User", back_populates="comments")
     reactions: Mapped[list["Reaction"]] = relationship("Reaction", back_populates="comment", cascade="all, delete-orphan")
+
+    def __repr__(self) -> str:
+        return f"<Comment id={self.id} post_id={self.post_id}>"
