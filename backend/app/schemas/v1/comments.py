@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Optional
 from datetime import datetime
 
@@ -10,6 +10,7 @@ class CommentUpdate(BaseModel):
     content: Optional[str] = None
 
 class CommentResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
     id: int
     content: str
     owner_id: int

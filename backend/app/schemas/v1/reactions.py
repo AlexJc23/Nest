@@ -1,10 +1,11 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 
 class ReactionCreate(BaseModel):
     name: str
 
 class ReactionResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
     id: int
     name: str | None
     post_id: int
