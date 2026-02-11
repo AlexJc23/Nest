@@ -38,3 +38,6 @@ class User(Base):
     comments: Mapped[list["Comment"]] = relationship("Comment", back_populates="owner", cascade="all, delete-orphan")
     reactions: Mapped[list["Reaction"]] = relationship("Reaction", back_populates="owner", cascade="all, delete-orphan")
     events: Mapped[list["Event"]] = relationship("Event", back_populates="owner", cascade="all, delete-orphan")
+
+    def __repr__(self) -> str:
+        return f"<User id={self.id} email={self.email}>"

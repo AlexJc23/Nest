@@ -12,7 +12,10 @@ class PostImage(Base):
     post_id: Mapped[int] = mapped_column(ForeignKey("posts.id"), nullable=False, index=True)
     image_url: Mapped[str] = mapped_column(String(2048), nullable=False)
     created_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
-
+    updated_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
 
     # Relationships can be defined here if needed
     post: Mapped["Post"] = relationship("Post", back_populates="images")
+
+    def __repr__(self) -> str:
+        return f"<PostImage id={self.id} post_id={self.post_id}>"

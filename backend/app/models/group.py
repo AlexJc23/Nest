@@ -19,3 +19,6 @@ class Group(Base):
 
     owner: Mapped["User"] = relationship("User", back_populates="owned_groups")
     posts: Mapped[list["Post"]] = relationship("Post",back_populates="group", cascade="all, delete-orphan")
+
+    def __repr__(self) -> str:
+        return f"<Group id={self.id} name={self.name}>"

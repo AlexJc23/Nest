@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 
 class EventAttendeeCreate(BaseModel):
@@ -6,6 +6,7 @@ class EventAttendeeCreate(BaseModel):
 
 
 class EventAttendeeResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
     id: int
     user_id: int
     event_id: int
