@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from app.models.group import Group
+from app.models.group_member import GroupMembers
 from app.schemas.v1.groups import GroupCreate, GroupUpdate
 from app.exceptions import AppException
 
@@ -12,11 +13,14 @@ def create_group(db: Session, group_in: GroupCreate, owner_id: int) -> Group:
     )
     # add the group to the Session
     db.add(group)
-    # commit the transaction
+    db.flush()  # forces INSERT, assigns group.id without committing (learned something new)
+
+    membership = GroupMembers(group_id=group.id, user_id=owner_id)
+    db.add(membership)
+
     db.commit()
-    # refresh the group to load DB-generated fields
     db.refresh(group)
-    # return the group
+
     return group
 
 def get_group_by_id(db: Session, group_id: int) -> Group:
@@ -37,7 +41,19 @@ def get_all_groups(db: Session, skip: int = 0, limit: int = 100) -> list[Group]:
     # return the list of groups
     return db.query(Group).offset(skip).limit(limit).all()
 
-def update_group(db: Session, group_id: int, group_in: GroupUpdate) -> Group:
+def get_groups_by_user_id(db: Session, user_id: int, skip: int = 0, limit: int = 100) -> list[Group]:
+    # Join groups to the membership table
+    # Then filter memberships by the given user
+    groups = (
+        db.query(Group)
+        .join(GroupMembers, Group.id == GroupMembers.group_id)
+        .filter(GroupMembers.user_id == user_id).offset(skip).limit(limit)
+        .all()
+    )
+
+    return groups
+
+def update_group(db: Session, user_id: int, group_id: int, group_in: GroupUpdate) -> Group:
     # query the group by id
     group = db.query(Group).filter(Group.id == group_id).first()
     # if not found, raise APPException
@@ -47,6 +63,13 @@ def update_group(db: Session, group_id: int, group_in: GroupUpdate) -> Group:
             message=f"Group with id {group_id} not found",
             status_code=404,
         )
+    if group.owner_id != user_id:
+        raise AppException(
+            code="FORBIDDEN",
+            message="You do not have permission to modify this group",
+            status_code=403,
+        )
+
     # update the group fields if provided in group_in
     if group_in.name is not None:
         group.name = group_in.name
@@ -60,7 +83,7 @@ def update_group(db: Session, group_id: int, group_in: GroupUpdate) -> Group:
     return group
 
 
-def delete_group(db: Session, group_id: int) -> None:
+def delete_group(db: Session, user_id: int, group_id: int) -> None:
     # query the group by id
     group = db.query(Group).filter(Group.id == group_id).first()
     # if not found, raise APPException
@@ -70,6 +93,16 @@ def delete_group(db: Session, group_id: int) -> None:
             message=f"Group with id {group_id} not found",
             status_code=404,
         )
+
+    if group.owner_id != user_id:
+        raise AppException(
+            code='UNAUTHORIZED',
+            message="You are not permitted to delete this group",
+            status_code=403
+        )
+
+
+
     # delete the group
     db.delete(group)
     # commit the transaction

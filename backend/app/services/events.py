@@ -44,7 +44,7 @@ def get_all_events(db: Session, skip: int = 0, limit: int = 100) -> list[Event]:
     # return list of events
     return db.query(Event).offset(skip).limit(limit).all()
 
-def update_event(db: Session, event_id: int, event_in: EventUpdate) -> Event:
+def update_event(db: Session,user_id: int, event_id: int, event_in: EventUpdate) -> Event:
     # query the event by id
     event = db.query(Event).filter(Event.id == event_id).first()
     # if not found, raise APPException
@@ -54,6 +54,12 @@ def update_event(db: Session, event_id: int, event_in: EventUpdate) -> Event:
             message=f"Event with id {event_id} not found",
             status_code=404,
         )
+    if event.owner_id != user_id:
+            raise AppException(
+                code="NOT_AUTHORIZED",
+                message="YOU ARE NOT PERMITTED TO DELETE THIS EVENT",
+                status_code=403
+            )
     # update the event fields if provided in event_in
     if event_in.title is not None:
         event.title = event_in.title
@@ -74,7 +80,7 @@ def update_event(db: Session, event_id: int, event_in: EventUpdate) -> Event:
     # return the updated event
     return event
 
-def delete_event(db: Session, event_id: int) -> None:
+def delete_event(db: Session, user_id: int, event_id: int) -> None:
     # query the event by id
     event = db.query(Event).filter(Event.id == event_id).first()
     # if not found, raise APPException
@@ -83,6 +89,12 @@ def delete_event(db: Session, event_id: int) -> None:
             code="EVENT_NOT_FOUND",
             message=f"Event with id {event_id} not found",
             status_code=404,
+        )
+    if event.owner_id != user_id:
+        raise AppException(
+            code="NOT_AUTHORIZED",
+            message="YOU ARE NOT PERMITTED TO DELETE THIS EVENT",
+            status_code=403
         )
     # delete the event
     db.delete(event)

@@ -25,6 +25,11 @@ def get_branch_by_id(db: Session, branch_id: int) -> Branch:
         )
     return branch
 
+def get_all_branches(db: Session) -> list[Branch]:
+    return db.query(Branch).all()
+
+
+
 def update_branch(db: Session, branch_id: int, branch_in: BranchUpdate) -> Branch:
     branch = db.query(Branch).filter(Branch.id == branch_id).first()
 
