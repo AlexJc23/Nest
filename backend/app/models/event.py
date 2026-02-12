@@ -22,10 +22,17 @@ class Event(Base):
 
 
     # Relationships can be defined here if needed
-    branch = Mapped[Branch] = relationship("Branch", back_populates="events")
-    owner = Mapped[User] = relationship("User", back_populates="events")
+    branch: Mapped["Branch"] = relationship(
+    "Branch",
+    back_populates="events",
+)
+
+    owner: Mapped["User"] = relationship(
+        "User",
+        back_populates="events",
+    )
+
 
 
     def __repr__(self) -> str:
         return f"<Event id={self.id} title={self.title} owner_id={self.owner_id}>"
-    

@@ -132,4 +132,3 @@ def delete_user(
 
     user.is_active = False
     db.commit()
-

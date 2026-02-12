@@ -8,12 +8,18 @@ from app.schemas.v1.error import ErrorDetail, ErrorResponse
 
 from app.api.v1 import auth, health, users
 
+# temp
+from app.db.base import Base
+from app.db.database import engine
+
+
 
 def create_app() -> FastAPI:
     settings = get_settings()
 
     # Create FastAPI application instance
     app = FastAPI()
+    Base.metadata.create_all(bind=engine)
 
     # ------------------------
     # Exception Handlers
@@ -35,7 +41,7 @@ def create_app() -> FastAPI:
     # ------------------------
     app.include_router(auth.router)
     app.include_router(health.health_router)
-    app.include_router(users.user_router)
+    app.include_router(users.router, prefix="/api/v1")
 
     # ------------------------
     # Middleware

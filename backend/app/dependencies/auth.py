@@ -2,7 +2,7 @@ from typing import Optional
 from fastapi import Header, Depends
 from app.schemas.v1.users import UserResponse
 from app.exceptions import AppException
-
+from datetime import datetime
 
 def get_current_user(
     x_token: Optional[str] = Header(default=None),
@@ -27,8 +27,8 @@ def get_current_user(
         nps_score=None,
         profile_img_url=None,
         google_chat_email=None,
-        created_at=None,
-        updated_at=None,
+        created_at=datetime.utcnow(),
+        updated_at=datetime.utcnow(),
     )
 
 
