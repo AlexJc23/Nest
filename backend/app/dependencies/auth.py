@@ -1,3 +1,6 @@
+from sqlalchemy.orm import Session
+from app.db.database import get_db, SessionLocal
+from app.models import User
 from typing import Optional
 from fastapi import Header, Depends
 from app.schemas.v1.users import UserResponse
@@ -6,30 +9,35 @@ from datetime import datetime
 
 def get_current_user(
     x_token: Optional[str] = Header(default=None),
-) -> UserResponse:
-    if x_token != "secret":
+    db: Session = Depends(get_db),
+) -> User:
+
+    if not x_token or not x_token.startswith("user-"):
         raise AppException(
             code="UNAUTHORIZED",
-            message="Invalid or missing authentication token",
-            status_code=401,
+            message="Invalid tokens",
+            status_code=401
         )
 
-    # Placeholder user (Phase 3 auth skeleton)
-    return UserResponse(
-        id=1,
-        email="placeholder@example.com",
-        first_name="Placeholder",
-        last_name="User",
-        role="user",
-        branch_id=None,
-        is_active=True,
-        driving_score=None,
-        nps_score=None,
-        profile_img_url=None,
-        google_chat_email=None,
-        created_at=datetime.utcnow(),
-        updated_at=datetime.utcnow(),
-    )
+    user_id = int(x_token.split("-")[1])
+    user = db.query(User).filter(User.id == user_id).first()
+
+
+    if not user:
+        raise AppException(
+            code="USER_NOT_FOUND",
+            message="Authenticated user not found",
+            status_code=404,
+        )
+
+    if not user.is_active:
+        raise AppException(
+            code="FORBIDDEN",
+            message="User account is inactive",
+            status_code=403,
+        )
+
+    return user
 
 
 def get_authenticated_user(

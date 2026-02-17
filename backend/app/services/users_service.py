@@ -3,6 +3,8 @@ from app.models.user import User
 from app.schemas.v1.users import UserCreate, UserUpdate
 from app.core.security import hash_password
 from app.exceptions import AppException
+from sqlalchemy import or_
+
 
 
 def create_user(db: Session, user_in: UserCreate) -> User:
@@ -31,7 +33,7 @@ def get_user_by_id(db: Session, user_id: int) -> User:
     # query the user by id
     # if not found, raise APPException
     # return the user
-    user = db.query(User).filter(User.id == user_id).first()
+    user = db.query(User).filter(User.id == user_id, User.is_active.is_(True)).first()
     if not user:
         raise AppException(
             code="USER_NOT_FOUND",
@@ -52,6 +54,28 @@ def get_user_by_email(db: Session, email: str) -> User:
             status_code=404,
         )
     return user
+
+
+def get_all_active_users(db: Session, skip: int = 0, limit: int = 20, search: str = None,) -> list[User]:
+
+    query = db.query(User).filter(User.is_active.is_(True))
+
+    if search:
+        query = query.filter(
+            or_(
+                User.first_name.ilike(f"{search}%"),
+                User.last_name.ilike(f"{search}%"),
+            )
+        )
+
+    return (
+        query
+        .order_by(User.last_name.asc(), User.first_name.asc())
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
+
 
 def update_user(
     db: Session,

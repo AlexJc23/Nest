@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from app.db.database import get_db
+from app.exceptions import AppException
 
 from app.dependencies.auth import get_current_user
 from app.dependencies.permissions import required_role
@@ -27,6 +28,24 @@ def get_me(
 ):
     return users_service.get_user_by_id(db, current_user.id)
 
+@router.get("/", response_model=list[UserResponse])
+def get_users(
+    search: str = None,
+    skip: int = Query(default=0, ge=0),
+    limit: int = Query(default=20, ge=0),
+    db: Session = Depends(get_db)
+):
+    return users_service.get_all_active_users(
+        db=db,
+        skip=skip,
+        limit=limit,
+        search=search
+    )
+
+@router.get("/{user_id}", response_model=UserResponse)
+def get_user_by_id(user_id: int, db: Session = Depends(get_db)):
+    return users_service.get_user_by_id(db, user_id)
+
 @router.put("/{user_id}", response_model=UserResponse)
 def update_user(
     user_id: int,
@@ -40,6 +59,7 @@ def update_user(
         user_id=user_id,
         user_in=user_in
     )
+
 @router.delete("/{user_id}")
 def deactivate_user(
     user_id: int,
