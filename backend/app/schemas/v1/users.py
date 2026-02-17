@@ -32,5 +32,5 @@ class UserResponse(BaseModel):
     nps_score: Optional[int] = None
     profile_img_url: Optional[str] = None
     google_chat_email: Optional[str] = None
-    created_at: datetime
-    updated_at: datetime
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
